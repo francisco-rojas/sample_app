@@ -15,8 +15,7 @@ render_views
     end
   end
   
-  describe "GET 'show'" do
-    
+  describe "GET 'show'" do    
     before(:each) do
       @user = Factory(:user)
     end
@@ -44,8 +43,31 @@ render_views
     it "should have a profile image" do
       get :show, :id => @user
       response.should have_selector("h1>img", :class => "gravatar")
-    end
-    
+    end    
   end
   
+  describe "POST 'create'" do
+    describe "failure" do
+      before(:each) do
+        @attr = { :name => "", :email => "", :password => "",
+        :password_confirmation => "" }
+      end
+      
+      it "should not create a user" do
+        lambda do
+          post :create, :user => @attr
+        end.should_not change(User, :count)
+      end
+      
+      it "should have the right title" do
+        post :create, :user => @attr
+        response.should have_selector("title", :content => "Sign up")
+      end
+      
+      it "should render the 'new' page" do
+        post :create, :user => @attr
+        response.should render_template('new')
+      end
+    end
+  end  
 end
