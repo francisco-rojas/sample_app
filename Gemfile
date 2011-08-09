@@ -7,6 +7,7 @@ gem 'rails', '3.1.0.rc5'
 gem 'mysql2'
 gem 'gravatar_image_tag'
 gem 'annotate'
+gem 'will_paginate', '3.0.pre2'
 
 
 
@@ -20,6 +21,7 @@ end
 
 group :development do
   gem 'rspec-rails'
+  gem 'faker'
 end
 
 group :test do
