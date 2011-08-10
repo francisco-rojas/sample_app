@@ -33,6 +33,22 @@ render_views
       get :new
       response.should have_selector("input[name='user[password_confirmation]'][type='password']")
     end
+    
+    describe "for signed in users" do
+      before(:each) do
+        @user = test_sign_in(Factory(:user))
+      end
+      
+      it "should not be able to access the new page" do
+        get :new
+        response.should_not be_success
+      end
+      
+      it "should redirect to home page" do
+        get :new
+        response.should redirect_to(root_path)
+      end     
+    end
  
   end
   
@@ -116,6 +132,22 @@ render_views
       it "should sign the user in" do
         post :create, :user => @attr
         controller.should be_signed_in
+      end
+      
+      describe "for signed in users" do
+        before(:each) do
+          @user = test_sign_in(Factory(:user))
+        end
+      
+        it "should not be able to access create action" do
+          post :create, :user => @user
+          response.should_not be_success
+        end
+        
+        it "should redirect to home page" do
+          post :create, :user => @user
+          response.should redirect_to(root_path)
+        end
       end
     end
     
@@ -245,38 +277,18 @@ render_views
     end
 
     describe "for signed-in users" do
-
+      
       before(:each) do
         @user = test_sign_in(Factory(:user))
         second = Factory(:user, :name => "Bob", :email => "another@example.com")
         third  = Factory(:user, :name => "Ben", :email => "another@example.net")
-
         @users = [@user, second, third]
+        
         30.times do
           @users << Factory(:user, :email => Factory.next(:email))
         end
       end
       
-      it "should not be able to access the new page" do
-        get :new
-        response.should_not be_success
-      end
-      
-      it "should redirect to home page" do
-        get :new
-        response.should redirect_to(root_path)
-      end
-      
-      it "should not be able to access create action" do
-        get :create
-        response.should_not be_success
-      end
-      
-      it "should redirect to home page" do
-        get :create
-        response.should redirect_to(root_path)
-      end
-
       it "should be successful" do
         get :index
         response.should be_success
