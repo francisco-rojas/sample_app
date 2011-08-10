@@ -385,6 +385,14 @@ render_views
         delete :destroy, :id => @user
         response.should redirect_to(users_path)
       end
+      
+      it "should not be able to delete itself" do
+        lambda do
+          delete :destroy, :id => @user
+          response.should redirect_to(users_path)
+        end.should_not change(User, :count)
+      end
+      
     end
   end
     
