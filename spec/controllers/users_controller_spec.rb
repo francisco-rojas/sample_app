@@ -256,6 +256,26 @@ render_views
           @users << Factory(:user, :email => Factory.next(:email))
         end
       end
+      
+      it "should not be able to access the new page" do
+        get :new
+        response.should_not be_success
+      end
+      
+      it "should redirect to home page" do
+        get :new
+        response.should redirect_to(root_path)
+      end
+      
+      it "should not be able to access create action" do
+        get :create
+        response.should_not be_success
+      end
+      
+      it "should redirect to home page" do
+        get :create
+        response.should redirect_to(root_path)
+      end
 
       it "should be successful" do
         get :index
