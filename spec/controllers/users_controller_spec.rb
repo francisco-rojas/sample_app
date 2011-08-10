@@ -328,10 +328,18 @@ render_views
         before(:each) do
           @user.toggle!(:admin)
         end
-        it "should have a delete link for each user when signed as admin" do
+        it "should have a delete link for each user when signed as admin except for the current admin" do
           get :index
           @users[0..2].each do |user|
-            response.should have_selector("a", :href => "/users/#{user.id}", :content => "delete")
+            if !user.admin?
+              response.should have_selector("a", :href => "/users/#{user.id}", :content => "delete")
+            end
+          end
+        end
+        it "admin should not have a delete link to delete itself" do
+          get :index
+          @users[0..2].each do |user|
+            response.should_not have_selector("a", :href => "/users/#{@user.id}", :content => "delete")
           end
         end
       end
@@ -391,8 +399,7 @@ render_views
           delete :destroy, :id => @admin.id
           response.should redirect_to(users_path)
         end.should_not change(User, :count)
-      end
-      
+      end            
     end
   end
     
