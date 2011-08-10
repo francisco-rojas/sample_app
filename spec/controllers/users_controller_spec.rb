@@ -139,7 +139,8 @@ render_views
         get :edit, :id => @user
         gravatar_url = "http://gravatar.com/emails"
         response.should have_selector("a", :href => gravatar_url,
-                                           :content => "change")
+                                           :content => "change",
+                                           :target => "_blank")
       end
     end    
   end  
