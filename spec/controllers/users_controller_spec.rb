@@ -350,7 +350,7 @@ render_views
   describe "DELETE 'destroy'" do
 
     before(:each) do
-      @user = Factory(:user)
+      @user = Factory(:user)      
     end
 
     describe "as a non-signed-in user" do
@@ -371,8 +371,8 @@ render_views
     describe "as an admin user" do
 
       before(:each) do
-        admin = Factory(:user, :email => "admin@example.com", :admin => true)
-        test_sign_in(admin)
+        @admin = Factory(:user, :email => "admin@example.com", :admin => true)
+        test_sign_in(@admin)
       end
 
       it "should destroy the user" do
@@ -388,7 +388,7 @@ render_views
       
       it "should not be able to delete itself" do
         lambda do
-          delete :destroy, :id => @user
+          delete :destroy, :id => @admin.id
           response.should redirect_to(users_path)
         end.should_not change(User, :count)
       end
