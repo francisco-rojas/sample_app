@@ -279,7 +279,8 @@ render_views
     describe "for signed-in users" do
       
       before(:each) do
-        @user = test_sign_in(Factory(:user))
+        @user = (Factory(:user))
+        test_sign_in(@user)
         second = Factory(:user, :name => "Bob", :email => "another@example.com")
         third  = Factory(:user, :name => "Ben", :email => "another@example.net")
         @users = [@user, second, third]
@@ -321,6 +322,27 @@ render_views
                                            :content => "2")
         response.should have_selector("a", :href => "/users?escape=false&page=2",
                                            :content => "Next")
+      end     
+      
+      describe "for admin users" do      
+        before(:each) do
+          @user.toggle!(:admin)
+        end
+        it "should have a delete link for each user when signed as admin" do
+          get :index
+          @users[0..2].each do |user|
+            response.should have_selector("a", :href => "/users/#{user.id}", :content => "delete")
+          end
+        end
+      end
+      
+      describe "for regular users" do                    
+        it "should not have a delete link for each user in the users index" do
+          get :index
+          @users[0..2].each do |user|
+            response.should_not have_selector("a", :href => "/users/#{user.id}", :content => "delete")
+          end
+        end
       end      
     end
   end
