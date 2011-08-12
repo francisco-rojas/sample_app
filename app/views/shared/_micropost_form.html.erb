@@ -4,7 +4,12 @@
     <%= f.text_area :content %>
   </div>
   <div class="actions">
-    <%= f.submit "Submit" %>
+  	<span>
+  		<%= f.submit "Submit", :id => 'submit_button' %>
+	</span>
+	<span class="char_counter">	  	
+	  	<label id="chars_left" class="counter">140 characters left</label>	    
+    </span>    
   </div>
 <% end %>
 
