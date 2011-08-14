@@ -31,7 +31,7 @@ describe "Users" do
           response.should have_selector("div.flash.success", :content => "Welcome")
           response.should render_template('users/show')
         end.should change(User, :count).by(1)
-      end
+      end           
     end   
   end
   
@@ -51,14 +51,43 @@ describe "Users" do
       it "should sign a user in and out" do
         user = Factory(:user)
         visit signin_path
-        fill_in :email,
-        :with => user.email
+        fill_in :email, :with => user.email
         fill_in :password, :with => user.password
         click_button
         controller.should be_signed_in
         click_link "Sign out"
         controller.should_not be_signed_in
       end
-    end   
+    end  
+    
+    describe "checking other user's accounts when loged in" do
+      before(:each) do
+        @user = Factory(:user)
+        second = Factory(:user, :name => "Bob", :email => "another@example.com")
+        visit signin_path
+        fill_in :email, :with => second.email
+        fill_in :password, :with => second.password
+        click_button
+        visit root_path
+        fill_in :micropost_content, :with => "Lorem ipsum dolor sit amet"
+        click_button
+        click_link "Sign Out"
+      end
+      
+      it "should not have delete buttons when visiting other user's microposts" do
+        visit signin_path
+        fill_in :email, :with => @user.email
+        fill_in :password, :with => @user.password
+        click_button
+        controller.should be_signed_in
+        visit users_path    
+        response.should have_selector("h1", :content => "All users")
+        response.should have_selector("ul", :class => "users")        
+        click_link "Bob"
+        response.should have_selector("h1", :content => "Bob")
+        response.should_not have_selector("a", :content => "delete")
+      end
+    end
+     
   end 
 end
