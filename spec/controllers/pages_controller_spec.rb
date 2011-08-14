@@ -12,26 +12,37 @@ describe PagesController do
       get 'home'
       response.should be_success
     end
-  end
   
-  it "should have the right title" do
-    get 'home'
-    response.should have_selector("title",
-                                  :content => @base_title + " | Home")
+    it "should have the right title" do
+      get 'home'
+      response.should have_selector("title",
+                                    :content => @base_title + " | Home")
+    end
+    
+    describe "for a loged in user" do
+      before(:each) do    
+        @user = test_sign_in(Factory(:user))
+      end
+      it "should have a side bar" do
+        get :home
+        response.should have_selector("td", :class => "sidebar round")
+      end      
+    end
+    
   end
-
 
   describe "GET 'contact'" do
     it "should be successful" do
       get 'contact'
       response.should be_success
     end
-  end
+
   
-  it "should have the right title" do
-    get 'contact'
-    response.should have_selector("title",
-                                  :content => @base_title + " | Contact")
+    it "should have the right title" do
+      get 'contact'
+      response.should have_selector("title",
+                                    :content => @base_title + " | Contact")
+    end
   end
   
   describe "GET 'about'" do
@@ -39,12 +50,13 @@ describe PagesController do
       get 'about'
       response.should be_success
     end
-  end
 
-  it "should have the right title" do
-    get 'about'
-    response.should have_selector("title",
-                                  :content => @base_title + " | About")
+
+    it "should have the right title" do
+      get 'about'
+      response.should have_selector("title",
+                                    :content => @base_title + " | About")
+    end
   end
   
   describe "GET 'help'" do
@@ -52,12 +64,13 @@ describe PagesController do
       get 'help'
       response.should be_success
     end
-  end
 
-  it "should have the right title" do
-    get 'help'
-    response.should have_selector("title",
-                                  :content => @base_title + " | Help")
+
+    it "should have the right title" do
+      get 'help'
+      response.should have_selector("title",
+                                    :content => @base_title + " | Help")
+    end
   end
 
 end
