@@ -20,9 +20,20 @@ describe PagesController do
     end
     
     describe "for a loged in user" do
-      before(:each) do    
+      before(:each) do
         @user = test_sign_in(Factory(:user))
+        other_user = Factory(:user, :email => Factory.next(:email))
+        other_user.follow!(@user)
       end
+      
+      it "should have the right follower/following counts" do
+        get :home
+        response.should have_selector("a", :href => following_user_path(@user),
+                                           :content => "0 following")
+        response.should have_selector("a", :href => followers_user_path(@user),
+                                           :content => "1 follower")
+      end
+      
       it "should have a side bar" do
         get :home
         response.should have_selector("td", :class => "sidebar round")
