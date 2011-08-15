@@ -89,6 +89,18 @@ render_views
       response.should have_selector("span.content", :content => mp1.content)
       response.should have_selector("span.content", :content => mp2.content)
     end
+    
+    it "should have proper pagination" do     
+      50.times do |n|
+        @user.microposts.create!(:content => "Post #{n}")
+      end
+      get :show, :id => @user
+      @user.microposts[0..20].each do |micropost|
+        response.should have_selector("td", :content => micropost.content)
+      end      
+      response.should have_selector("div.pagination")
+      response.should have_selector("span.disabled", :content => "Previous")      
+    end
   end
   
   describe "POST 'create'" do
